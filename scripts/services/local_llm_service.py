@@ -79,7 +79,7 @@ class LocalLLMService:
                 resp = await client.post(self.url, headers=headers, json=payload)
                 resp.raise_for_status()
                 data = resp.json()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error("LocalLLMService: ошибка при запросе к локальной LLM: %s", e)
             return (
                 "Не удалось получить ответ от локальной LLM. "
@@ -87,14 +87,13 @@ class LocalLLMService:
             )
 
         try:
-            # OpenAI‑совместимый формат: choices[0].message.content
             choices = data.get("choices") or []
             if not choices:
                 return "Локальная LLM вернула пустой ответ. Используйте ответ от YandexGPT."
             message = choices[0].get("message") or {}
             content = message.get("content") or ""
             return str(content)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error(
                 "LocalLLMService: ошибка парсинга ответа локальной LLM: %s", e
             )

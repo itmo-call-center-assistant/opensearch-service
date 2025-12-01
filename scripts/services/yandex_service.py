@@ -24,11 +24,9 @@ class YandexService:
     """
 
     def __init__(self) -> None:
-        # Ключ и папка
         self.api_key: str | None = os.getenv("YANDEX_API_KEY")
         self.folder_id: str | None = os.getenv("YANDEX_FOLDER_ID")
 
-        # Модель и URL для эмбеддингов
         self.embedding_url: str = os.getenv(
             "YANDEX_EMBEDDINGS_URL",
             "https://llm.api.cloud.yandex.net/foundationModels/v1/textEmbedding",
@@ -38,7 +36,6 @@ class YandexService:
             "text-search-doc",
         )
 
-        # Модель и URL для генерации текста
         self.completion_url: str = os.getenv(
             "YANDEX_COMPLETION_URL",
             "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
@@ -55,7 +52,6 @@ class YandexService:
     async def get_embedding(self, text: str) -> List[float]:
         """Получить векторное представление текста через Yandex Foundation Models."""
         if not self.enabled:
-            # Возвращаем стабильный нулевой вектор фиксированной длины.
             return [0.0] * 256
 
         headers = {
@@ -77,19 +73,16 @@ class YandexService:
             resp.raise_for_status()
             data = resp.json()
 
-        # Поддерживаем обе возможные схемы ответа
         if "result" in data and "embedding" in data["result"]:
             return data["result"]["embedding"]
         if "embedding" in data:
             return data["embedding"]
 
-        # Фолбэк — возвращаем нулевой вектор
         return [0.0] * 256
 
     async def get_completion(self, prompt: str, max_tokens: int = 1000) -> str:
         """Получить ответ от Yandex GPT."""
         if not self.enabled:
-            # Возвращаем аккуратное сообщение, чтобы фронт/клиент понимал ситуацию.
             logger.info(
                 "YandexService: запрос completion без настроенного API‑ключа — "
                 "возвращаем заглушку.",

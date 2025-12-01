@@ -11,16 +11,13 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-# Импортируем конфиги и сервисы так, чтобы модуль корректно работал
-# как часть пакетного модуля `scripts.services.*`, так и в старом сценарии
-# запуска из папки `scripts`.
-try:  # вариант для пакетного импорта: scripts.services.search_service
+try:
     from scripts.opensearch_config import OpenSearchConfig
     from scripts.services.opensearch_service import OpenSearchService
     from scripts.services.yandex_service import YandexService
     from scripts.services.hyde_service import hyde_processor
     from scripts.services.colbert_reranker import colbert_reranker
-except ImportError:  # вариант для локального запуска из каталога `scripts`
+except ImportError:
     from opensearch_config import OpenSearchConfig
     from services.opensearch_service import OpenSearchService
     from services.yandex_service import YandexService
@@ -45,8 +42,8 @@ class SearchService:
         self,
         query: str,
         size: int = 10,
-        semantic_weight: float = 0.7,  # для совместимости с 2гис; пока не используется
-        keyword_weight: float = 0.3,  # для совместимости с 2гис; пока не используется
+        semantic_weight: float = 0.7,
+        keyword_weight: float = 0.3,
         use_hyde: bool = True,
         use_colbert: bool = True,
         index_name: Optional[str] = None,
@@ -57,15 +54,11 @@ class SearchService:
         если он отличается от значения по умолчанию в OpenSearchConfig.
         """
         try:
-            # 1. Базовый embedding запроса
             query_embedding = await self.yandex_service.get_embedding(query)
 
-            # 2. HyDE (опционально)
             if use_hyde:
                 query_embedding = await self._apply_hyde(query, query_embedding)
 
-            # 3. Гибридный поиск в OpenSearch: kNN по text_vector + keyword (multi_match)
-            #    Если гибрид недоступен/даёт ошибку — откатываемся на старый BM25‑поиск.
             raw_size = size * 2 if use_colbert else size
             target_index = index_name or self.os_cfg.index_name
             client = self.opensearch_service.client
@@ -89,8 +82,6 @@ class SearchService:
                                         "query": query,
                                         "fields": ["text^2", "source"],
                                         "type": "best_fields",
-                                        # Важно: используем OR, чтобы длинные запросы
-                                        # не «зажимали» выдачу.
                                         "operator": "or",
                                     }
                                 },
@@ -105,15 +96,13 @@ class SearchService:
                 for h in hits:
                     src = h.get("_source", {}) or {}
                     src["_score"] = h.get("_score")
-                    # подсветку не настраиваем в этом запросе, оставляем пустой список
                     src["highlight"] = []
                     results.append(src)
                 print(
                     f"Hybrid search (BM25 + kNN) вернул {len(results)} документов "
                     f"из индекса {target_index}",
                 )
-            except Exception as e:  # noqa: BLE001
-                # Фолбэк на прежний BM25‑поиск, если гибрид по какой‑то причине не поддерживается
+            except Exception as e:
                 print(f"Гибридный поиск не удался, откатываемся на BM25: {e}")
                 results = self.opensearch_service.search(
                     query,
@@ -121,7 +110,6 @@ class SearchService:
                     index_name=index_name,
                 )
 
-            # 4. ColBERT‑реранкинг (опционально)
             print(
                 f"ColBERT включен: {use_colbert}, результатов: "
                 f"{len(results) if results else 0}",
@@ -140,7 +128,7 @@ class SearchService:
                 print("ColBERT реранкинг отключен")
 
             return results
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"Ошибка при поиске документов: {e}")
             return []
 
@@ -165,7 +153,7 @@ class SearchService:
             )
             print(f"HyDE применён: сгенерировано гипотез: {len(hypotheses)}")
             return combined_embedding
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"Ошибка при применении HyDE: {e}")
             return original_embedding
 
@@ -200,7 +188,7 @@ class SearchService:
 {context}
 """
             return await self.yandex_service.get_completion(prompt, max_tokens=max_tokens)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"Ошибка при генерации ответа: {e}")
             return "Извините, произошла ошибка при генерации ответа."
 
@@ -236,7 +224,7 @@ class SearchService:
                 "documents": documents,
                 "total_documents": len(documents),
             }
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"Ошибка при поиске и генерации ответа: {e}")
             return {
                 "query": query,

@@ -21,8 +21,6 @@ class FastColBERTReranker:
     """Быстрый реранкер на основе document‑level embeddings (Yandex FM)."""
 
     def __init__(self) -> None:
-        # Модель эмбеддингов фиксируем один раз,
-        # а ключ/папку подхватываем динамически через _refresh_credentials().
         self.yandex_embedding_model = os.getenv(
             "YANDEX_EMBEDDING_MODEL",
             "text-search-doc",
@@ -76,7 +74,7 @@ class FastColBERTReranker:
 
             reranked = await self._fast_colbert_rerank(query_embedding, results)
             return reranked[:top_k]
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"ColBERT: ошибка при реранжировании: {e}")
             return results[:top_k]
 
@@ -98,7 +96,6 @@ class FastColBERTReranker:
             scored_results: List[Dict[str, Any]] = []
 
             for i, result in enumerate(results):
-                # В нашей схеме есть `text` (фрагмент документа)
                 text = (result.get("text") or "").strip()
 
                 if not text:
@@ -133,14 +130,13 @@ class FastColBERTReranker:
                 reverse=True,
             )
             return reranked
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"ColBERT: ошибка в реранжировании: {e}")
             return results
 
     async def _get_embedding(self, text: str) -> Optional[List[float]]:
         """Получить embedding для текста через Yandex API."""
         try:
-            # Подхватываем ключи динамически перед каждым вызовом
             self._refresh_credentials()
             if not self.yandex_api_key or not self.yandex_folder_id:
                 print(
@@ -181,7 +177,7 @@ class FastColBERTReranker:
 
             print("ColBERT: пустой embedding в ответе")
             return None
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"ColBERT: ошибка при получении embedding: {e}")
             return None
 
@@ -200,7 +196,7 @@ class FastColBERTReranker:
                 return 0.0
             sim = dot / (norm1 * norm2)
             return max(0.0, min(1.0, (sim + 1.0) / 2.0))
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"ColBERT: ошибка при расчёте косинусного сходства: {e}")
             return 0.0
 
@@ -212,12 +208,11 @@ class FastColBERTReranker:
             if score >= 10:
                 return 1.0
             return score / 10.0
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(f"ColBERT: ошибка при нормализации скора: {e}")
             return 0.5
 
 
-# Глобальный экземпляр, как в оригинальном проекте
 colbert_reranker = FastColBERTReranker()
 
 

@@ -5,12 +5,9 @@ from typing import List, Dict, Any
 from opensearchpy import OpenSearch, RequestsHttpConnection
 from requests.auth import HTTPBasicAuth
 
-# Импорт конфигурации OpenSearch.
-# Сначала пробуем пакетный импорт (когда весь проект установлен как пакет `scripts`),
-# а затем — локальный, если файл запускается напрямую из папки `scripts`.
-try:  # вариант для импорта как пакета: scripts.services.opensearch_service
+try:
     from ..opensearch_config import OpenSearchConfig
-except ImportError:  # вариант для локального запуска из /Users/admin/СДЭК/scripts
+except ImportError:
     from opensearch_config import OpenSearchConfig
 
 
@@ -30,8 +27,6 @@ class OpenSearchService:
             http_auth=auth,
             use_ssl=cfg.url.startswith("https://"),
             verify_certs=False,
-            # Не спамим в логи предупреждением про verify_certs=False —
-            # это осознанный выбор для локальной разработки.
             ssl_show_warn=False,
             connection_class=RequestsHttpConnection,
             timeout=30,
@@ -64,7 +59,7 @@ class OpenSearchService:
                 "OpenSearchService: set index.search.default_pipeline="
                 f"{self.cfg.search_pipeline!r} for index {self.cfg.index_name!r}",
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             print(
                 "OpenSearchService: failed to set search.default_pipeline "
                 f"for index {self.cfg.index_name!r}: {e}",
@@ -89,13 +84,10 @@ class OpenSearchService:
                     "query": query,
                     "fields": ["text^2", "source"],
                     "type": "best_fields",
-                    # Важно: используем OR, чтобы длинные запросы агента
-                    # (с большим числом слов) не отбрасывали все документы.
                     "operator": "or",
                 }
             },
             "highlight": {"fields": {"text": {}}},
-            # Небольшой rescore для уточнения порядка top-50
             "rescore": {
                 "window_size": max(k, 50),
                 "query": {

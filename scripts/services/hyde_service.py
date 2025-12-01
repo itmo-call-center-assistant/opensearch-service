@@ -63,7 +63,7 @@ class HyDEProcessor:
 
             print(f"HyDE: всего сгенерировано гипотез: {len(hypotheses)}")
             return hypotheses
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error("Ошибка при генерации гипотетических документов: %s", e)
             return []
 
@@ -118,12 +118,11 @@ class HyDEProcessor:
 
             print(f"HyDE гипотеза сгенерирована: {hypothesis[:100]}...")
             return hypothesis.strip()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error("Ошибка при генерации гипотезы: %s", e)
             return None
 
 
-# Глобальный экземпляр, как в оригинальном проекте
 hyde_processor = HyDEProcessor()
 
 

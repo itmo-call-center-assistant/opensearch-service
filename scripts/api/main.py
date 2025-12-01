@@ -30,14 +30,11 @@ app = FastAPI(
 )
 
 
-# Инициализация общих сервисов
-# Модель лежит в корне проекта `/Users/admin/СДЭК/burnout_model_v1.pkl`.
-# Текущий файл: `/Users/admin/СДЭК/scripts/api/main.py` → поднимаемся на три уровня.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 MODEL_PATH = os.path.join(PROJECT_ROOT, "burnout_model_v1.pkl")
 burnout_agent = BurnoutAgent(model_path=MODEL_PATH)
-risk_service = burnout_agent.risk_service  # reuse
-search_service = burnout_agent.search_service  # reuse SearchService и все его зависимости
+risk_service = burnout_agent.risk_service
+search_service = burnout_agent.search_service
 
 
 def _features_to_row_dict(features: EmployeeFeatures) -> Dict[str, Any]:
@@ -143,7 +140,6 @@ async def llm_answer(payload: LLMRequest) -> LLMResponse:
     Таким образом, этот эндпоинт можно использовать и как "чистый" чат,
     и как чат-психолога по базе документов.
     """
-    # RAG-режим: используем OpenSearch + RAG, если явно задан индекс
     if payload.index_name:
         documents = await search_service.search_documents(
             query=payload.query,
@@ -160,7 +156,6 @@ async def llm_answer(payload: LLMRequest) -> LLMResponse:
             max_tokens=payload.max_tokens,
         )
     else:
-        # Простой вызов LLM без контекста
     answer = await search_service.yandex_service.get_completion(
         prompt=payload.query,
         max_tokens=payload.max_tokens,
@@ -172,7 +167,5 @@ async def llm_answer(payload: LLMRequest) -> LLMResponse:
     )
 
 
-# Пример запуска:
-# uvicorn scripts.api.main:app --reload
 
 
