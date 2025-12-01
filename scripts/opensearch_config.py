@@ -14,12 +14,26 @@ class OpenSearchConfig:
     - Подключение всегда идёт по HTTPS.
     """
 
-    host: str = os.getenv("OPENSEARCH_HOST", "localhost")
-    port: int = int(os.getenv("OPENSEARCH_PORT", "9200"))
+    host: str = os.getenv("OPENSEARCH_HOST") or ""
+    port: str = os.getenv("OPENSEARCH_PORT") or ""
     user: Optional[str] = os.getenv("OPENSEARCH_USER")
     password: Optional[str] = os.getenv("OPENSEARCH_PASSWORD")
-    index_name: str = os.getenv("OPENSEARCH_INDEX", "makar_sdek1")
+    index_name: str = os.getenv("OPENSEARCH_INDEX", "makar_ozon_semantic")
     search_pipeline: Optional[str] = os.getenv("OPENSEARCH_SEARCH_PIPELINE")
+
+    def __post_init__(self):
+        if not self.host:
+            raise ValueError("OPENSEARCH_HOST must be set in environment variables")
+        if not self.port:
+            raise ValueError("OPENSEARCH_PORT must be set in environment variables")
+        if not self.user:
+            raise ValueError("OPENSEARCH_USER must be set in environment variables")
+        if not self.password:
+            raise ValueError("OPENSEARCH_PASSWORD must be set in environment variables")
+        try:
+            self.port = int(self.port)
+        except ValueError:
+            raise ValueError(f"OPENSEARCH_PORT must be a valid integer, got: {self.port}")
 
     @property
     def url(self) -> str:
