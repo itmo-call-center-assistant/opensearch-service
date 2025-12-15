@@ -10,6 +10,7 @@ dependencies = [
     "numpy>=2.3.5",
     "opensearch-py>=3.1.0",
     "pandas>=2.3.3",
+    "podman-compose>=1.5.0",
     "pydantic>=2.12.5",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",

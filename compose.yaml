@@ -1,0 +1,11 @@
+name: call-center-rag
+services:
+  rag_api:
+    build: .
+    image: call_center_rag_api:latest
+    environment:
+      - OPENSEARCH_HOST=${OPENSEARCH_HOST}
+      - OPENSEARCH_PORT=${OPENSEARCH_PORT}
+      - OPENSEARCH_USER=${OPENSEARCH_USER}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - YANDEX_API_KEY=${YANDEX_API_KEY}

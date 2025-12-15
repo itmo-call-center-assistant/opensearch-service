@@ -1,6 +1,6 @@
 from __future__ import annotations
-
 from fastapi import FastAPI
+
 from scripts.services.search_service import SearchService
 from scripts.api.schemas import (
     LLMRequest,
