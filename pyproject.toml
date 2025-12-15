@@ -17,3 +17,9 @@ dependencies = [
     "tqdm>=4.67.1",
     "uvicorn>=0.38.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.0",
+    "ruff>=0.14.9",
+]
