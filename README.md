@@ -20,7 +20,8 @@
 
 ## 1. Предварительные условия
 
-- **Python 3.8+** с установленными пакетами (см. раздел 1.1).
+- **Python 3.8+**
+- [**uv**](https://docs.astral.sh/uv/#installation)
 - **OpenSearch** должен быть запущен и доступен по HTTPS.
 - **Файлы проекта**:
   - `opensearch_index_makar_ozon_semantic.ipynb` — ноутбук для семантической индексации.
@@ -32,16 +33,8 @@
 Установите необходимые пакеты:
 
 ```bash
-pip install fastapi uvicorn[standard] opensearch-py httpx pandas scikit-learn pydantic python-dotenv numpy tqdm requests
+uv sync
 ```
-
-Для работы с ноутбуками также потребуется Jupyter:
-
-```bash
-pip install jupyter notebook
-```
-
----
 
 ## 2. Переменные окружения
 
@@ -83,7 +76,8 @@ SEMANTIC_SIM_THRESHOLD=0.8
 MAX_SENT_PER_CHUNK=8
 ```
 
-**Важно:** 
+**Важно:**
+
 - Файл `.env` не должен попадать в систему контроля версий (уже добавлен в `.gitignore`).
 - Все секретные данные (пароли, API ключи) должны быть только в `.env`, не в коде.
 
@@ -125,10 +119,11 @@ load_dotenv()
 2. Откройте ноутбук:
 
    ```bash
-   jupyter notebook opensearch_index_makar_ozon_semantic.ipynb
+   uv run jupyter notebook opensearch_index_makar_ozon_semantic.ipynb
    ```
 
 3. В интерфейсе Jupyter:
+
    - Выберите ядро с установленными зависимостями.
    - Последовательно выполните все ячейки сверху вниз:
      - Загрузка переменных окружения.
@@ -177,7 +172,7 @@ load_dotenv()
 2. Откройте ноутбук:
 
    ```bash
-   jupyter notebook opensearch_eval_colbert.ipynb
+   uv run jupyter notebook opensearch_eval_colbert.ipynb
    ```
 
 3. Выполните ячейки для оценки качества поиска.
@@ -193,13 +188,13 @@ load_dotenv()
 Убедитесь, что переменные окружения загружены из `.env` файла (или установлены в системе):
 
 ```bash
-uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
+uv run uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
 ```
 
 Или с указанием конкретного интерпретатора:
 
 ```bash
-python -m uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
+uv run python -m uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
 ```
 
 После старта API будет доступен по адресу:
