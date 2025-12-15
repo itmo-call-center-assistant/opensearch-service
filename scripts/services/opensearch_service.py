@@ -114,5 +114,3 @@ class OpenSearchService:
             src["highlight"] = (h.get("highlight") or {}).get("text", [])
             out.append(src)
         return out
-
-

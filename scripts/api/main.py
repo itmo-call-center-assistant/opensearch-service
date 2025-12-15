@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from fastapi import FastAPI
 
-from scripts.burnout_agent import BurnoutAgent, BurnoutRiskService
+from scripts.burnout_agent import BurnoutAgent
 from scripts.api.schemas import (
     AgentRequest,
     AgentResponse,
@@ -19,8 +19,6 @@ from scripts.api.schemas import (
     QARequest,
     QAResponse,
 )
-from scripts.services.search_service import SearchService
-from scripts.opensearch_config import OpenSearchConfig
 
 
 app = FastAPI(
@@ -92,8 +90,12 @@ async def search_documents(payload: SearchRequest) -> SearchResponse:
     documents = await search_service.search_documents(
         query=payload.query,
         size=payload.size,
-        semantic_weight=payload.semantic_weight if hasattr(payload, "semantic_weight") else 0.7,
-        keyword_weight=payload.keyword_weight if hasattr(payload, "keyword_weight") else 0.3,
+        semantic_weight=payload.semantic_weight
+        if hasattr(payload, "semantic_weight")
+        else 0.7,
+        keyword_weight=payload.keyword_weight
+        if hasattr(payload, "keyword_weight")
+        else 0.3,
         use_hyde=payload.use_hyde,
         use_colbert=payload.use_colbert,
         index_name=payload.index_name,
@@ -156,16 +158,12 @@ async def llm_answer(payload: LLMRequest) -> LLMResponse:
             max_tokens=payload.max_tokens,
         )
     else:
-    answer = await search_service.yandex_service.get_completion(
-        prompt=payload.query,
-        max_tokens=payload.max_tokens,
-    )
+        answer = await search_service.yandex_service.get_completion(
+            prompt=payload.query,
+            max_tokens=payload.max_tokens,
+        )
 
     return LLMResponse(
         query=payload.query,
         answer=answer,
     )
-
-
-
-

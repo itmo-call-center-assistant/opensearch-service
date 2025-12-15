@@ -121,9 +121,9 @@ class YandexService:
             resp.raise_for_status()
             data = resp.json()
 
-        return data.get("result", {}).get("alternatives", [{}])[0].get(
-            "message", {}
-        ).get("text", "")
-
-
-
+        return (
+            data.get("result", {})
+            .get("alternatives", [{}])[0]
+            .get("message", {})
+            .get("text", "")
+        )

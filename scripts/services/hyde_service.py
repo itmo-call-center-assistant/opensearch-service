@@ -124,5 +124,3 @@ class HyDEProcessor:
 
 
 hyde_processor = HyDEProcessor()
-
-

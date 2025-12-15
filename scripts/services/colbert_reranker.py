@@ -214,5 +214,3 @@ class FastColBERTReranker:
 
 
 colbert_reranker = FastColBERTReranker()
-
-
