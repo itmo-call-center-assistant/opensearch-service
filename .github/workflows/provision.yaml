@@ -1,0 +1,19 @@
+name: Provision
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restart
+        uses: appleboy/ssh-action@v1
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: LLM_API_KEY
+          script: |
+            dnf -y install podman
+            podman secret create --env=true llmapikey LLM_API_KEY

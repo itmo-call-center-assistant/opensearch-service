@@ -1,0 +1,35 @@
+name: publish
+
+on:
+  push:
+
+permissions:
+  packages: write
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Build
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: .
+          tags: |
+            ${{ github.ref == 'refs/heads/main' && 'latest' || '' }}
+            ${{ github.sha }}
+          image: call-center-assistant/rag
+          containerfiles: |
+            ./Dockerfile
+      - name: push
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
