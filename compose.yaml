@@ -9,6 +9,9 @@ services:
       - OPENSEARCH_USER=admin
       - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
       - YANDEX_API_KEY=${YANDEX_API_KEY}
+      - YANDEX_FOLDER_ID=${YANDEX_FOLDER_ID}
+    ports:
+      - "8000:8000"
   opensearch:
     image: opensearchproject/opensearch:3
     environment:
