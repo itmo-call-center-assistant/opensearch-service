@@ -21,7 +21,7 @@ jobs:
           tags: |
             ${{ github.ref == 'refs/heads/main' && 'latest' || '' }}
             ${{ github.sha }}
-          image: call-center-assistant/rag
+          image: itmo-call-center-assistant/rag
           containerfiles: |
             ./Dockerfile
       - name: push
