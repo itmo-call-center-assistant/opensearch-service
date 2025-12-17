@@ -25,7 +25,7 @@ services:
   indexer:
     build:
       context: .
-      dockerfile: notebook.Dockerfile
+      dockerfile: indexer.Dockerfile
     environment:
       - OPENSEARCH_URL=${OPENSEARCH_URL}
       - OPENSEARCH_USER=${OPENSEARCH_USER}
