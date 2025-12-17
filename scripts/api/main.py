@@ -1,5 +1,6 @@
 from __future__ import annotations
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from scripts.services.search_service import SearchService
 from scripts.api.schemas import (
@@ -16,6 +17,13 @@ app = FastAPI(
     title="Burnout RAG API",
     description="Сервисы для оценки риска выгорания и RAG-поиска по материалам.",
     version="1.0.0",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
