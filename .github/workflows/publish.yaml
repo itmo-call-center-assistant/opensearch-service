@@ -16,8 +16,9 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           context: .
+          # ${{ github.ref == 'refs/heads/main' && 'latest' || '' }}
           tags: |
-            ${{ github.ref == 'refs/heads/main' && 'latest' || '' }}
+            'latest'
             ${{ github.sha }}
           image: itmo-call-center-assistant/indexer
           containerfiles: |
@@ -41,7 +42,7 @@ jobs:
         with:
           context: .
           tags: |
-            ${{ github.ref == 'refs/heads/main' && 'latest' || '' }}
+            latest
             ${{ github.sha }}
           image: itmo-call-center-assistant/rag
           containerfiles: |
