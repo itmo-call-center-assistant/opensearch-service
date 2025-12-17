@@ -96,14 +96,7 @@ MAX_SENT_PER_CHUNK=8
 
 ### 2.2. Загрузка переменных окружения
 
-Ноутбуки автоматически загружают переменные из `.env` файла через `python-dotenv`:
-
-```python
-from dotenv import load_dotenv
-load_dotenv()
-```
-
-Эта строка уже добавлена в начало всех ноутбуков.
+При запуске через `podman-compose` или `uv --env-file .env` переменные из `.env` будут доступны во всех ноутбуках и API.
 
 ---
 
@@ -132,7 +125,7 @@ load_dotenv()
 2. Откройте ноутбук:
 
    ```bash
-   uv run jupyter notebook opensearch_index_makar_ozon_semantic.ipynb
+   uv run --env-file .env jupyter notebook opensearch_index_makar_ozon_semantic.ipynb
    ```
 
 3. В интерфейсе Jupyter:
@@ -185,7 +178,7 @@ load_dotenv()
 2. Откройте ноутбук:
 
    ```bash
-   uv run jupyter notebook opensearch_eval_colbert.ipynb
+   uv run --env-file .env jupyter notebook opensearch_eval_colbert.ipynb
    ```
 
 3. Выполните ячейки для оценки качества поиска.
@@ -198,16 +191,8 @@ load_dotenv()
 
 ### 5.1. Команда запуска
 
-Убедитесь, что переменные окружения загружены из `.env` файла (или установлены в системе):
-
 ```bash
-uv run uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
-```
-
-Или с указанием конкретного интерпретатора:
-
-```bash
-uv run python -m uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
+uv run --env-file .env uvicorn scripts.api.main:app --host 0.0.0.0 --port 8000
 ```
 
 После старта API будет доступен по адресу:
