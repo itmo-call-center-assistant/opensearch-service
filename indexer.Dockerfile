@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./opensearch_index_makar_ozon_semantic.ipynb .
 ENV CHOWN_HOME=yes
 
-CMD ["jupyter", "nbconvert", "--execute", "--to", "notebook", "./opensearch_index_makar_ozon_semantic.ipynb"]
+CMD ["jupyter", "nbconvert", "--execute", "--debug", "--to", "notebook", "./opensearch_index_makar_ozon_semantic.ipynb"]
