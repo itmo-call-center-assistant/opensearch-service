@@ -17,6 +17,24 @@ services:
     environment:
       - discovery.type=single-node
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASSWORD}
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
     ports:
       - "9200:9200"
       - "9600:9600"
+  indexer:
+    build:
+      context: .
+      dockerfile: notebook.Dockerfile
+    environment:
+      - OPENSEARCH_URL=${OPENSEARCH_URL}
+      - OPENSEARCH_USER=${OPENSEARCH_USER}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - YANDEX_API_KEY=${YANDEX_API_KEY}
+      - YANDEX_FOLDER_ID=${YANDEX_FOLDER_ID}
+      - SEMANTIC_SIM_THRESHOLD=${SEMANTIC_SIM_THRESHOLD}
+      - MAX_SENT_PER_CHUNK=${MAX_SENT_PER_CHUNK}
+    ports:
+      - "8888:8888"
+volumes:
+  opensearch-data:

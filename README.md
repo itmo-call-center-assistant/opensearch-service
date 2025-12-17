@@ -8,6 +8,21 @@
 - **Yandex Foundation Models** — эмбеддинги (`text-search-doc`) и генерация текста (YandexGPT).
 - **FastAPI** — HTTP‑API с несколькими эндпоинтами (`/search`, `/rag/answer`, `/llm/answer`).
 - **Jupyter Notebooks** — для индексации и оценки качества поиска.
+- **podman** — контейнеризация
+
+# Запуск
+
+Быстрый запуск:
+
+## 1. Предварительные условия
+
+1. Установите зависимости:
+   - [**uv**](https://docs.astral.sh/uv/#installation)
+   - [**podman**](https://podman.io/docs/installation)
+2. Заполните `.env` по аналогии с `env.example`
+3. Добавьте markdown-документы для индексации в `/docs`
+4. Запустите `uv run podman-compose up --build`
+5. API (swagger) доступен на https://localhost:8000/docs
 
 Ниже — пошаговая инструкция, как:
 
@@ -15,8 +30,6 @@
 2. Проиндексировать базу знаний в OpenSearch.
 3. Запустить API на порту `8000`.
 4. Делать запросы ко всем эндпоинтам.
-
----
 
 ## 1. Предварительные условия
 
