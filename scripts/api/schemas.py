@@ -10,10 +10,14 @@ class EmployeeFeatures(BaseModel):
 
     load_change: float = Field(..., description="Изменение нагрузки")
     overtime_change: float = Field(..., description="Изменение переработок")
-    days_since_vacation_norm: float = Field(..., description="Нормированное время с последнего отпуска")
+    days_since_vacation_norm: float = Field(
+        ..., description="Нормированное время с последнего отпуска"
+    )
     was_on_sick_leave: int = Field(..., description="Был ли на больничном (0/1)")
     has_reprimand: int = Field(..., description="Есть ли взыскания (0/1)")
-    participates_in_activities: int = Field(..., description="Участвует ли в активностях (0/1)")
+    participates_in_activities: int = Field(
+        ..., description="Участвует ли в активностях (0/1)"
+    )
     has_subordinates: int = Field(..., description="Есть ли подчинённые (0/1)")
     kpi1: float
     kpi2: float
@@ -44,7 +48,9 @@ class AgentRequest(EmployeeFeatures):
         None,
         description="Имя индекса OpenSearch; если не задано — используется значение по умолчанию",
     )
-    use_hyde: bool = Field(False, description="Использовать ли HyDE при формировании эмбеддинга запроса")
+    use_hyde: bool = Field(
+        False, description="Использовать ли HyDE при формировании эмбеддинга запроса"
+    )
     use_colbert: bool = Field(True, description="Включать ли ColBERT‑реранкер")
 
 
@@ -128,5 +134,3 @@ class LLMResponse(BaseModel):
 
     query: str
     answer: str
-
-

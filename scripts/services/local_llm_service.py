@@ -94,13 +94,8 @@ class LocalLLMService:
             content = message.get("content") or ""
             return str(content)
         except Exception as e:
-            logger.error(
-                "LocalLLMService: ошибка парсинга ответа локальной LLM: %s", e
-            )
+            logger.error("LocalLLMService: ошибка парсинга ответа локальной LLM: %s", e)
             return (
                 "Не удалось корректно разобрать ответ локальной LLM. "
                 "Используйте ответ от YandexGPT."
             )
-
-
-

@@ -187,7 +187,9 @@ class SearchService:
 Контекст:
 {context}
 """
-            return await self.yandex_service.get_completion(prompt, max_tokens=max_tokens)
+            return await self.yandex_service.get_completion(
+                prompt, max_tokens=max_tokens
+            )
         except Exception as e:
             print(f"Ошибка при генерации ответа: {e}")
             return "Извините, произошла ошибка при генерации ответа."
@@ -232,6 +234,3 @@ class SearchService:
                 "documents": [],
                 "total_documents": 0,
             }
-
-
-

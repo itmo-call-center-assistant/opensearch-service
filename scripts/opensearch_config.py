@@ -33,7 +33,9 @@ class OpenSearchConfig:
         try:
             self.port = int(self.port)
         except ValueError:
-            raise ValueError(f"OPENSEARCH_PORT must be a valid integer, got: {self.port}")
+            raise ValueError(
+                f"OPENSEARCH_PORT must be a valid integer, got: {self.port}"
+            )
 
     @property
     def url(self) -> str:
@@ -60,5 +62,3 @@ class YandexConfig:
         if not self.folder_id:
             raise ValueError("YANDEX_FOLDER_ID is required")
         return f"gpt://{self.folder_id}/{self.model}"
-
-

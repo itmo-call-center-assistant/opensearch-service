@@ -1,0 +1,28 @@
+[project]
+name = "opensearch-service"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.124.4",
+    "httpx>=0.28.1",
+    "numpy>=2.3.5",
+    "opensearch-py>=3.1.0",
+    "pandas>=2.3.3",
+    "podman-compose>=1.5.0",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+    "requests>=2.32.5",
+    "scikit-learn>=1.8.0",
+    "tqdm>=4.67.1",
+    "uvicorn>=0.38.0",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "notebook>=7.5.0",
+    "pre-commit>=4.5.0",
+    "ruff>=0.14.9",
+]
